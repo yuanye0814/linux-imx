@@ -145,6 +145,24 @@
 			spi-max-frequency = <100000>;
 		};
 	};
+
+	// self define test - dts_led
+	dts_led {
+		compatible = "alpha-dts_led";
+		status = "okay";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		dts_led_0: led@0 {
+			compatible = "dts_led,led";
+			reg = < 0X020C406C 0x4 /* CCM_CCGR1_BASE */
+					0X020E0068 0x4 /* SW_MUX_GPIO1_IO03 */
+					0X020E02F4 0x4 /* SW_PAD_GPIO1_IO03 */
+					0X0209C000 0x4 /* GPIO1_DR */
+					0X0209C004 0x4 /* GPIO1_GDIR */
+
+			>;
+		};
+	};
 };
 
 &cpu0 {
