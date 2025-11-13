@@ -152,6 +152,7 @@
 		status = "okay";
 		#address-cells = <1>;
 		#size-cells = <1>;
+		ranges;
 		dts_led_0: led@0 {
 			compatible = "dts_led,led";
 			reg = < 0X020C406C 0x4 /* CCM_CCGR1_BASE */
