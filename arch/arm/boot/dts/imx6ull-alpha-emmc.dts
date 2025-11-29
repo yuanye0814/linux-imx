@@ -164,6 +164,15 @@
 			>;
 		};
 	};
+
+	// gpio led
+	gpio_led {
+		compatible = "alpha-gpio_led";
+		status = "okay";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gpio_led>;
+		led-gpios = <&gpio1 3 GPIO_ACTIVE_LOW>;
+	};
 };
 
 &cpu0 {
@@ -456,7 +465,7 @@
 			fsl,pins = <
 				MX6UL_PAD_GPIO1_IO01__GPIO1_IO01	0xb0
 				MX6UL_PAD_GPIO1_IO02__GPIO1_IO02	0xb0
-				MX6UL_PAD_GPIO1_IO03__GPIO1_IO03	0xb0
+				/* MX6UL_PAD_GPIO1_IO03__GPIO1_IO03	0xb0 */
 				MX6UL_PAD_GPIO1_IO04__GPIO1_IO04	0xb0
 			>;
 		};
@@ -580,6 +589,13 @@
 				MX6UL_PAD_LCD_RESET__WDOG1_WDOG_ANY    0x30b0
 			>;
 		};
+
+		// gpio led
+		pinctrl_gpio_led:ledgrp_gpio_led{
+			fsl,pins = <
+				MX6UL_PAD_GPIO1_IO03__GPIO1_IO03 0X10B0
+			>;
+		};
 	};
 };
 
@@ -700,7 +716,7 @@
 &tsc {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_tsc>;
-	xnur-gpio = <&gpio1 3 GPIO_ACTIVE_LOW>;
+	/* xnur-gpio = <&gpio1 3 GPIO_ACTIVE_LOW>; */
 	measure-delay-time = <0xffff>;
 	pre-charge-time = <0xfff>;
 	status = "okay";
