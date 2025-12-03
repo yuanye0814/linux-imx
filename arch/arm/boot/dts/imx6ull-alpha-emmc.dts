@@ -182,6 +182,15 @@
 		pinctrl-0 = <&pinctrl_beep>;
 		beep-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
 	};
+
+	// key
+	key {
+		compatible = "alpha-key";
+		status = "okay";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_key>;
+		key-gpios = <&gpio1 18 GPIO_ACTIVE_LOW>;
+	};
 };
 
 &cpu0 {
@@ -610,6 +619,13 @@
 		pinctrl_beep: beepgrp {
 			fsl,pins = <
 				MX6ULL_PAD_SNVS_TAMPER1__GPIO5_IO01 0x10B0
+			>;
+		};
+
+		// key0
+		pinctrl_key: keygrp {
+			fsl,pins = <
+				MX6UL_PAD_UART1_CTS_B__GPIO1_IO18 0xF080
 			>;
 		};
 	};
