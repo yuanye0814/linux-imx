@@ -63,14 +63,14 @@
 			gpios = <&gpio_spi 3 GPIO_ACTIVE_LOW>;
 		};
 
-		reg_sd1_vmmc: regulator@1 {
-			compatible = "regulator-fixed";
-			regulator-name = "VSD_3V3";
-			regulator-min-microvolt = <3300000>;
-			regulator-max-microvolt = <3300000>;
-			gpio = <&gpio1 9 GPIO_ACTIVE_HIGH>;
-			enable-active-high;
-		};
+		// reg_sd1_vmmc: regulator@1 {
+		// 	compatible = "regulator-fixed";
+		// 	regulator-name = "VSD_3V3";
+		// 	regulator-min-microvolt = <3300000>;
+		// 	regulator-max-microvolt = <3300000>;
+		// 	gpio = <&gpio1 9 GPIO_ACTIVE_HIGH>;
+		// 	enable-active-high;
+		// };
 
 		reg_gpio_dvfs: regulator-gpio {
 			compatible = "regulator-gpio";
@@ -324,10 +324,27 @@
 };
 
 &i2c2 {
-	clock_frequency = <100000>;
+	clock-frequency = <100000>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_i2c2>;
 	status = "okay";
+
+	// 0x14 0x5D
+	touchscreen@14{
+		compatible = "goodix,gt911";
+		reg = <0x14>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_tsc_int &pinctrl_display_reset>;
+		interrupt-parent = <&gpio1>;
+		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
+
+		irq-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+		// gt911-irq-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+		reset-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
+
+		touchscreen-size-x = <1024>;
+        touchscreen-size-y = <600>;
+	};
 
 	codec: wm8960@1a {
 		compatible = "wlf,wm8960";
@@ -366,7 +383,7 @@
 			fsl,pins = <
 				MX6UL_PAD_UART1_RTS_B__GPIO1_IO19	0x17059 /* SD1 CD */
 				MX6UL_PAD_GPIO1_IO05__USDHC1_VSELECT	0x17059 /* SD1 VSELECT */
-				MX6UL_PAD_GPIO1_IO09__GPIO1_IO09        0x17059 /* SD1 RESET */
+				/* MX6UL_PAD_GPIO1_IO09__GPIO1_IO09        0x17059 */ /* SD1 RESET */
 			>;
 		};
 
@@ -510,12 +527,10 @@
 			>;
 		};
 
-		pinctrl_tsc: tscgrp {
+		// touch screen int
+		pinctrl_tsc_int: tsc_int_grp {
 			fsl,pins = <
-				MX6UL_PAD_GPIO1_IO01__GPIO1_IO01	0xb0
-				MX6UL_PAD_GPIO1_IO02__GPIO1_IO02	0xb0
-				/* MX6UL_PAD_GPIO1_IO03__GPIO1_IO03	0xb0 */
-				MX6UL_PAD_GPIO1_IO04__GPIO1_IO04	0xb0
+				MX6UL_PAD_GPIO1_IO09__GPIO1_IO09	0x1D079 /* 0x79 */ /* 0x1b0b0 */  /* 0xF080 */	/* INT */
 			>;
 		};
 
@@ -683,42 +698,43 @@
 
 &iomuxc_snvs {
 	pinctrl-names = "default_snvs";
-        pinctrl-0 = <&pinctrl_hog_2>;
-        imx6ul-evk {
+	pinctrl-0 = <&pinctrl_hog_2>;
+	imx6ul-evk {
 		pinctrl_hog_2: hoggrp-2 {
-                        fsl,pins = <
-                                MX6ULL_PAD_SNVS_TAMPER0__GPIO5_IO00      0x80000000
-                        >;
-                };
+			fsl,pins = <
+				MX6ULL_PAD_SNVS_TAMPER0__GPIO5_IO00      0x80000000
+			>;
+		};
 
 		pinctrl_dvfs: dvfsgrp {
-                        fsl,pins = <
-                                MX6ULL_PAD_SNVS_TAMPER3__GPIO5_IO03      0x79
-                        >;
-                };
-		
-		pinctrl_lcdif_reset: lcdifresetgrp {
-                        fsl,pins = <
-                                /* used for lcd reset */
-                                MX6ULL_PAD_SNVS_TAMPER9__GPIO5_IO09  0x79
-                        >;
-                };
+			fsl,pins = <
+				MX6ULL_PAD_SNVS_TAMPER3__GPIO5_IO03      0x79
+			>;
+		};
+	
+		// lcd and tsc reset
+		pinctrl_display_reset: display_reset_grp {
+			fsl,pins = <
+				/* used for lcd reset */
+				MX6ULL_PAD_SNVS_TAMPER9__GPIO5_IO09  0x10b0
+			>;
+		};
 
 		pinctrl_spi4: spi4grp {
-                        fsl,pins = <
-                                MX6ULL_PAD_BOOT_MODE0__GPIO5_IO10        0x70a1
-                                MX6ULL_PAD_BOOT_MODE1__GPIO5_IO11        0x70a1
-                                /* MX6ULL_PAD_SNVS_TAMPER7__GPIO5_IO07      0x70a1 */
-                                /* MX6ULL_PAD_SNVS_TAMPER8__GPIO5_IO08      0x80000000 */
-                        >;
-                };
+			fsl,pins = <
+				MX6ULL_PAD_BOOT_MODE0__GPIO5_IO10        0x70a1
+				MX6ULL_PAD_BOOT_MODE1__GPIO5_IO11        0x70a1
+				/* MX6ULL_PAD_SNVS_TAMPER7__GPIO5_IO07      0x70a1 */
+				/* MX6ULL_PAD_SNVS_TAMPER8__GPIO5_IO08      0x80000000 */
+			>;
+		};
 
-                pinctrl_sai2_hp_det_b: sai2_hp_det_grp {
-                        fsl,pins = <
-                                MX6ULL_PAD_SNVS_TAMPER4__GPIO5_IO04   0x17059
-                        >;
-                };
-        };
+		pinctrl_sai2_hp_det_b: sai2_hp_det_grp {
+			fsl,pins = <
+				MX6ULL_PAD_SNVS_TAMPER4__GPIO5_IO04   0x17059
+			>;
+		};
+	};
 };
 
 
@@ -794,14 +810,14 @@
 	status = "okay";
 };
 
-&tsc {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_tsc>;
-	/* xnur-gpio = <&gpio1 3 GPIO_ACTIVE_LOW>; */
-	measure-delay-time = <0xffff>;
-	pre-charge-time = <0xfff>;
-	status = "okay";
-};
+// &tsc {
+// 	pinctrl-names = "default";
+// 	pinctrl-0 = <&pinctrl_tsc>;
+// 	/* xnur-gpio = <&gpio1 3 GPIO_ACTIVE_LOW>; */
+// 	measure-delay-time = <0xffff>;
+// 	pre-charge-time = <0xfff>;
+// 	status = "okay";
+// };
 
 &uart1 {
 	pinctrl-names = "default";
@@ -848,17 +864,17 @@
 	tx-d-cal = <0x5>;
 };
 
-&usdhc1 {
-	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-	pinctrl-0 = <&pinctrl_usdhc1>;
-	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
-	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
-	cd-gpios = <&gpio1 19 GPIO_ACTIVE_LOW>;
-	keep-power-in-suspend;
-	enable-sdio-wakeup;
-	vmmc-supply = <&reg_sd1_vmmc>;
-	status = "okay";
-};
+// &usdhc1 {
+// 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+// 	pinctrl-0 = <&pinctrl_usdhc1>;
+// 	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
+// 	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
+// 	cd-gpios = <&gpio1 19 GPIO_ACTIVE_LOW>;
+// 	keep-power-in-suspend;
+// 	enable-sdio-wakeup;
+// 	vmmc-supply = <&reg_sd1_vmmc>;
+// 	status = "okay";
+// };
 
 &usdhc2 {
 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
