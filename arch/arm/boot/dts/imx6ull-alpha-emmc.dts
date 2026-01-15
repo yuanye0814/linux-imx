@@ -242,21 +242,21 @@
 
 &fec1 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_enet1>;
+	pinctrl-0 = <&pinctrl_enet1 &pinctrl_enet1_reset>;
 	phy-mode = "rmii";
 	phy-handle = <&ethphy0>;
 	phy-reset-gpios = <&gpio5 7 GPIO_ACTIVE_LOW>;
-	phy-reset-duration = <26>;
+	phy-reset-duration = <200>;
 	status = "okay";
 };
 
 &fec2 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_enet2>;
+	pinctrl-0 = <&pinctrl_enet2 &pinctrl_enet2_reset>;
 	phy-mode = "rmii";
 	phy-handle = <&ethphy1>;
 	phy-reset-gpios = <&gpio5 8 GPIO_ACTIVE_LOW>;
-	phy-reset-duration = <26>;
+	phy-reset-duration = <200>;
 	status = "okay";
 
 	mdio {
@@ -415,7 +415,6 @@
 				MX6UL_PAD_ENET1_TX_DATA0__ENET1_TDATA00	0x1b0b0
 				MX6UL_PAD_ENET1_TX_DATA1__ENET1_TDATA01	0x1b0b0
 				MX6UL_PAD_ENET1_TX_CLK__ENET1_REF_CLK1	0x4001b031
-				MX6UL_PAD_SNVS_TAMPER7__GPIO5_IO07 0x10b0 /* enet1 reset*/
 			>;
 		};
 
@@ -431,7 +430,6 @@
 				MX6UL_PAD_ENET2_TX_DATA0__ENET2_TDATA00	0x1b0b0
 				MX6UL_PAD_ENET2_TX_DATA1__ENET2_TDATA01	0x1b0b0
 				MX6UL_PAD_ENET2_TX_CLK__ENET2_REF_CLK2	0x4001b031
-				MX6UL_PAD_SNVS_TAMPER8__GPIO5_IO08 0x10b0 /* enet2 reset*/
 			>;
 		};
 
@@ -733,6 +731,20 @@
 		pinctrl_sai2_hp_det_b: sai2_hp_det_grp {
 			fsl,pins = <
 				MX6ULL_PAD_SNVS_TAMPER4__GPIO5_IO04   0x17059
+			>;
+		};
+
+		// enet1 reset
+		pinctrl_enet1_reset: enet1_reset_grp{
+			fsl,pins = <
+				MX6ULL_PAD_SNVS_TAMPER7__GPIO5_IO07 0x10b0 /* enet1 reset */
+			>;
+		};
+
+		// enet2 reset
+		pinctrl_enet2_reset: enet2_reset_grp{
+			fsl,pins = <
+				MX6ULL_PAD_SNVS_TAMPER8__GPIO5_IO08 0x10b0 /* enet2 reset */
 			>;
 		};
 	};
