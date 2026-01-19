@@ -83,6 +83,13 @@
 			gpios = <&gpio5 3 GPIO_ACTIVE_HIGH>;
 			states = <1300000 0x1 1400000 0x0>;
 		};
+
+		reg_vref_adc: regulator@2 {
+			compatible = "regulator-fixed";
+			regulator-name = "vref-3v3";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+		};
 	};
 
 	sound {
@@ -699,6 +706,13 @@
 				MX6UL_PAD_UART2_RTS_B__ECSPI3_MISO 0x10B1
 			>;
 		};
+
+		// adc1
+		pinctrl_adc1: adc1grp{
+			fsl,pins = <
+				MX6UL_PAD_GPIO1_IO01__GPIO1_IO01 0xb0
+			>;
+		};
 	};
 };
 
@@ -929,4 +943,12 @@
 		spi-max-frequency = <20000000>;
 		reg = <0>;
 	};
+};
+
+&adc1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_adc1>;
+	status = "okay";
+	num-channels = <2>;
+	vref-supply = <&reg_vref_adc>;
 };
